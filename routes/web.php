@@ -32,7 +32,6 @@ Route::view('/', 'home.index')
 Route::view('/contact', 'home.contact')
     ->name('home.contact');
 
-Route::get('/posts/{id}', function ($id){   #using the '{id}' tag, the digits in the URL can change and the return will change aswell
     $posts = [
         1 => [
             'title' => 'Intro to Laravel',
@@ -43,9 +42,21 @@ Route::get('/posts/{id}', function ($id){   #using the '{id}' tag, the digits in
         2 => [
             'title' => 'Intro to PHP',
             'content' => 'This is a short intro to PHP',
-            'is_new' => false
+            'is_new' => false,
+            'has_comments' => true
+        ],
+        3 => [
+            'title' => 'Intro to Golang',
+            'content' => 'This is a short intro to Golang',
+            'is_new' => true
         ]
-        ];
+    ];
+
+    Route::get('/posts', function () use ($posts){
+        return view('posts.index', ['posts' => $posts]);
+    });
+
+Route::get('/posts/{id}', function ($id) use ($posts) {   #using the '{id}' tag, the digits in the URL can change and the return will change aswell
 
         abort_if(!isset($posts[$id]), 404);
     
