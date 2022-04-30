@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Route;
 
 #simplify the above when returning a static html page with:
 
-Route::view('/', 'home.index')
+    Route::view('/', 'home.index')
     ->name('home.index');
 
 Route::view('/contact', 'home.contact')
@@ -70,3 +70,40 @@ Route::get('/posts/{id}', function ($id) use ($posts) {   #using the '{id}' tag,
 Route:: get('/recent-posts/{days_ago?}', function ($daysAgo = 20){ #the '?' means the numbers for days ago are optional.
  return 'Posts from ' . $daysAgo . ' days ago'; # the '.' are functionally concats
 })->name('posts.recent.index');
+
+//route grouping
+route::prefix('/fun')->name('fun.')->group(function() use($posts){
+
+// section about redirecting routes 
+Route::get('/responses', function() use($posts) {
+    return response($posts, 201)->header('Content-Type', 'application/json')->cookie('MY_COOKIES', 'Abby Durbridge', 3600);
+})->name('responses');
+
+Route::get('/redirect', function(){
+    return redirect('/contact');
+})->name('redirect');
+
+Route::get('/back', function(){
+    return back();
+})->name('back');
+
+Route::get('/named-route', function(){
+    return redirect()->route('posts.show', ['id' => 1]);
+})->name('named-route');
+
+Route::get('/away', function(){
+    return redirect('http://google.com');
+})->name('away');
+
+//returning json data
+
+Route::get('/json', function() use($posts){
+    return response()->json($posts);
+})->name('json');
+
+//downloading files in public
+Route::get('/download', function() use($posts){
+    return response()->download(public_path('/itssully.png')) ;
+})->name('download');
+
+});
