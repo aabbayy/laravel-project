@@ -1,5 +1,6 @@
 <?php
 
+use GuzzleHttp\Psr7\Request;
 use Illuminate\Foundation\Console\RouteCacheCommand;
 use Illuminate\Support\Facades\Route;
 
@@ -53,6 +54,8 @@ Route::view('/contact', 'home.contact')
     ];
 
     Route::get('/posts', function () use ($posts){
+        // dd(request()->all()); #dd is 'dump & die'
+        // dd((int)request()->input('page', '1')); 
         return view('posts.index', ['posts' => $posts]);
     });
 
@@ -69,7 +72,7 @@ Route::get('/posts/{id}', function ($id) use ($posts) {   #using the '{id}' tag,
 
 Route:: get('/recent-posts/{days_ago?}', function ($daysAgo = 20){ #the '?' means the numbers for days ago are optional.
  return 'Posts from ' . $daysAgo . ' days ago'; # the '.' are functionally concats
-})->name('posts.recent.index');
+})->name('posts.recent.index')->middleware('auth'); #using middleware('auth') requires user to be authenticated to visit the route.
 
 //route grouping
 route::prefix('/fun')->name('fun.')->group(function() use($posts){
